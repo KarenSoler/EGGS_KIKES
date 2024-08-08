@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eggs API Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Eggs API Interface</h1>
+
+        <!-- Form to create a new egg -->
+        <h2>Create Egg</h2>
+        <form id="create-egg-form">
+            <input type="text" id="type_egg" placeholder="Type of Egg" required>
+            <input type="number" id="price" placeholder="Price" required>
+            <input type="text" id="supplier" placeholder="Supplier" required>
+            <button type="submit">Create Egg</button>
+        </form>
+
+        <!-- Form to update an egg -->
+        <h2>Update Egg</h2>
+        <form id="update-egg-form">
+            <input type="number" id="update-id" placeholder="ID of Egg" required>
+            <input type="text" id="update-type_egg" placeholder="New Type of Egg">
+            <input type="number" id="update-price" placeholder="New Price">
+            <input type="text" id="update-supplier" placeholder="New Supplier">
+            <button type="submit">Update Egg</button>
+        </form>
+
+        <!-- Button to fetch all eggs -->
+        <button id="fetch-eggs">Fetch All Eggs</button>
+
+        <!-- Display the list of eggs -->
+        <h2>Eggs List</h2>
+        <ul id="eggs-list"></ul>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
