@@ -34,6 +34,36 @@
             <button type="submit">Create Egg</button>
         </form>
 
+        <form id="delete-egg-form">
+            <label for="egg-id">ID del huevo a eliminar:</label>
+            <input type="number" id="egg-id" name="egg-id" required>
+            <button type="submit">Eliminar Huevo</button>
+        </form>
+
+<script>
+  document.getElementById('delete-egg-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const eggId = document.getElementById('egg-id').value;
+
+    try {
+      const response = await fetch(`/eggs/${eggId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.status === 204) {
+        alert('El huevo ha sido eliminado exitosamente.');
+      } else if (response.status === 404) {
+        alert('Huevo no encontrado.');
+      } else {
+        alert('Error al eliminar el huevo.');
+      }
+    } catch (error) {
+      alert('Error al comunicarse con el servidor.');
+    }
+  });
+</script>
+
+
         <!-- Form to update an egg -->
         <h2>Update Egg</h2>
         <form id="update-egg-form">

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const price = parseFloat(document.getElementById('update-price').value) || undefined;
         const supplier = document.getElementById('update-supplier').value || undefined;
 
-        const response = await fetch(`${baseUrl}/${id}`, {
+        const response = await fetch(`${'http://127.0.0.1:8000/eggs'}/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,4 +70,26 @@ document.addEventListener('DOMContentLoaded', () => {
             eggsList.appendChild(li);
         });
     }
+
+    document.getElementById('delete-egg-form').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const eggId = document.getElementById('egg-id').value;
+
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/eggs/${eggId}`, {
+    method: 'DELETE',
+});
+
+        if (response.status === 204) {
+            alert('El huevo ha sido eliminado exitosamente.');
+        } else if (response.status === 404) {
+            alert('Huevo no encontrado.');
+        } else {
+            alert('Error al eliminar el huevo.');
+        }
+    } catch (error) {
+        alert('Error al comunicarse con el servidor.');
+    }
+});
+
 });

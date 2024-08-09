@@ -38,32 +38,32 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
     }
     print(new_egg)
     try:
-            result = db.execute(insert(egg_table).values(new_egg))
-            print("Print1")
-            inserted_id = result.inserted_primary_key[0]
-            print("print2")
+        result = db.execute(insert(egg_table).values(new_egg))
+        print("Print1")
+        inserted_id = result.inserted_primary_key[0]
+        print("print2")
 
-            query = select(egg_table).where(egg_table.c.id == inserted_id)
-            print("print3")
-            record = db.execute(query).fetchone()
-            print("print4")
+        query = select(egg_table).where(egg_table.c.id == inserted_id)
+        print("print3")
+        record = db.execute(query).fetchone()
+        print("print4")
 
-            db.commit()
+        db.commit()
 
-            if record:
-                print(record)
-                print(type(record))
-                keys = [
-                    "id",
-                    "type_egg",
-                    "price",
-                    "supplier",
-                ]
-                data = dict(zip(keys, record))
-                return data
+        if record:
+            print(record)
+            print(type(record))
+            keys = [
+                "id",
+                "type_egg",
+                "price",
+                "supplier",
+            ]
+            data = dict(zip(keys, record))
+            return data
 
-            else:
-                raise HTTPException(status_code=404, detail="Egg not found")
+        else:
+            raise HTTPException(status_code=404, detail="Egg not found")
     except Exception as e:
         db.rollback()  # Hacer rollback si algo falla
         raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
@@ -71,36 +71,86 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
 
 @eggs_router.get("/eggs/{id}", response_model=Egg)
 def view_egg(id: int):
+    # Consulta para seleccionar el huevo por su id
     query = select(egg_table).where(egg_table.c.id == id)
-    record = con.execute(query).first()
+    record = con.execute(query).fetchone()  # Obtiene el primer resultado
+
     if record:
-        return dict(record)
+        # Mapeo de columnas a claves para formar un diccionario
+        keys = ["id", "type_egg", "price", "supplier"]
+        data = dict(zip(keys, record))
+        return data
     else:
         raise HTTPException(status_code=404, detail="Egg not found")
+
 
 
 @eggs_router.delete("/eggs/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_egg(id: int):
-    result = con.execute(egg_table.delete().where(egg_table.c.id == id))
-    if result.rowcount == 0:
-        raise HTTPException(status_code=404, detail="Egg not found")
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def delete_egg(id: int, db: Session = Depends(get_db)):
+    try:
+        print("Attempting to delete egg with id:", id)
+
+        # Ejecuta la eliminación
+        result = db.execute(egg_table.delete().where(egg_table.c.id == id))
+
+        # Verifica si realmente se eliminó algo
+        if result.rowcount == 0:
+            db.rollback()  # Revertir la transacción si no se eliminó nada
+            raise HTTPException(status_code=404, detail="Egg not found")
+
+        print("Committing transaction")
+        db.commit()  # Confirmar los cambios en la base de datos
+        print("Transaction committed")
+
+        return Response(status_code=HTTP_204_NO_CONTENT)
+
+    except SQLAlchemyError as e:
+        print("Error occurred:", e)
+        db.rollback()  # Revertir la transacción en caso de error
+        raise HTTPException(status_code=500, detail="Database error: " + str(e))
 
 
 @eggs_router.put("/eggs/{id}", response_model=Egg)
-def update_egg(id: int, egg: EggUpdate):
-    update_stmt = egg_table.update().where(egg_table.c.id == id).values(
-        type_egg=egg.type_egg,
-        price=egg.price,
-        supplier=egg.supplier
-    )
-    result = con.execute(update_stmt)
-    if result.rowcount == 0:
-        raise HTTPException(status_code=404, detail="Egg not found")
+def update_egg(id: int, egg: EggUpdate, db: Session = Depends(get_db)):
+    try:
+        # Crear la sentencia de actualización
+        update_stmt = (
+            egg_table.update()
+            .where(egg_table.c.id == id)
+            .values(
+                type_egg=egg.type_egg,
+                price=egg.price,
+                supplier=egg.supplier
+            )
+        )
 
-    query = select(egg_table).where(egg_table.c.id == id)
-    record = con.execute(query).fetchone()
-    if record:
-        return dict(record)
-    else:
-        raise HTTPException(status_code=404, detail="Egg not found")
+        # Ejecutar la actualización
+        result = db.execute(update_stmt)
+
+        # Verificar si realmente se actualizó algo
+        if result.rowcount == 0:
+            db.rollback()  # Revertir la transacción si no se actualizó nada
+            raise HTTPException(status_code=404, detail="Egg not found")
+
+        # Confirmar la transacción
+        db.commit()
+
+        # Consultar el registro actualizado
+        query = select(egg_table).where(egg_table.c.id == id)
+        record = db.execute(query).fetchone()
+
+        if record:
+            keys = [
+                "id",
+                "type_egg",
+                "price",
+                "supplier",
+            ]
+            data = dict(zip(keys, record))
+            return data
+        else:
+            raise HTTPException(status_code=404, detail="Egg not found")
+
+    except Exception as e:
+        db.rollback()  # Hacer rollback si algo falla
+        raise HTTPException(status_code=500, detail=f"Server error: {str(e)}")
