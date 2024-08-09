@@ -84,7 +84,6 @@ def view_egg(id: int):
         raise HTTPException(status_code=404, detail="Egg not found")
 
 
-
 @eggs_router.delete("/eggs/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_egg(id: int, db: Session = Depends(get_db)):
     try:
