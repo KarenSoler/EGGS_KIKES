@@ -10,11 +10,11 @@ name = os.getenv("MYSQLDATABASE")
 user = os.getenv("MYSQLUSER")
 password = os.getenv("MYSQLPASSWORD")
 
-DATABASE_URL = "mysql+pymysql://"+user+":"+password+"@"+host+":"+port+"/"+name
+DATABASE_URL = "mysql+pymysql://" + user + ":" + password + "@" + host + ":" + port + "/" + name
 
+engine = create_engine("mysql+pymysql://" + user + ":" + password + "@" + host + ":" + port + "/" + name,
+                       pool_pre_ping=True)
 
-
-engine = create_engine(DATABASE_URL)
 metadata = MetaData()
 metadata.bind = engine
 
