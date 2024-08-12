@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.eggs import eggs_router
@@ -14,3 +16,5 @@ app.add_middleware(
 
 
 app.include_router(eggs_router)
+
+
