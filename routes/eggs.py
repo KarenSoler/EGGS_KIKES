@@ -71,12 +71,12 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
 def view_egg(id: int, db: Session = Depends(get_db)):
     # Consulta para seleccionar el huevo por su id
     query = select(egg_table).where(egg_table.c.id == id)
-    record = db.execute(query).fetchone()  # Obtiene el primer resultado
+    result = db.execute(query).fetchone()  # Obtiene el primer resultado
 
-    if record:
+    if result:
         # Mapeo de columnas a claves para formar un diccionario
         keys = ["id", "type_egg", "price", "supplier"]
-        data = dict(zip(keys, record))
+        data = dict(zip(keys, result))
         return data
     else:
         raise HTTPException(status_code=404, detail="Egg not found")
