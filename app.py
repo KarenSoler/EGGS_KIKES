@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.eggs import eggs_router
@@ -12,7 +13,8 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todas las cabeceras
 )
 
-
+if __name__ == "__main__":
+    uvicorn.run(app, host="viaduct.proxy.rlwy.net", port=11513)
 app.include_router(eggs_router)
 
 
