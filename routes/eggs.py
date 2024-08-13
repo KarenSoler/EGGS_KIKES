@@ -2,7 +2,6 @@ from typing import List
 from sqlalchemy import insert, select
 from fastapi import APIRouter, HTTPException, Response, status, Depends
 from starlette.status import HTTP_204_NO_CONTENT
-from config.db import con
 from models.egg_model import egg_table
 from schemas.egg_schema import Egg, EggCreate, EggUpdate
 from sqlalchemy.exc import SQLAlchemyError
@@ -13,7 +12,7 @@ eggs_router = APIRouter()
 
 
 @eggs_router.get("/eggs", response_model=List[Egg])
-def get_eggs():
+def get_eggs(db: Session = Depends(get_db)):
     keys = [
         "id",
         "type_egg",
@@ -21,9 +20,9 @@ def get_eggs():
         "supplier"
     ]
     query = select(egg_table)
-    results = con.execute(query).first()
+    results = db.execute(query).fetchall()
 
-    data = [dict(zip(keys, results)) for result in results]
+    data = [dict(zip(keys, results)) for results in results]
     return data
 
 
@@ -40,6 +39,7 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
     try:
         result = db.execute(insert(egg_table).values(new_egg))
         print("Print1")
+        db.commit()
         inserted_id = result.inserted_primary_key[0]
         print("print2")
 
@@ -47,8 +47,6 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
         print("print3")
         record = db.execute(query).fetchone()
         print("print4")
-
-        db.commit()
 
         if record:
             print(record)
@@ -70,10 +68,10 @@ def create_egg(egg: EggCreate, db: Session = Depends(get_db)):
 
 
 @eggs_router.get("/eggs/{id}", response_model=Egg)
-def view_egg(id: int):
+def view_egg(id: int, db: Session = Depends(get_db)):
     # Consulta para seleccionar el huevo por su id
     query = select(egg_table).where(egg_table.c.id == id)
-    record = con.execute(query).fetchone()  # Obtiene el primer resultado
+    record = db.execute(query).fetchone()  # Obtiene el primer resultado
 
     if record:
         # Mapeo de columnas a claves para formar un diccionario

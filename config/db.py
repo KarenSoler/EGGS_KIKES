@@ -6,14 +6,16 @@ from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 
+#Configuración de variables de entorno
 host = os.getenv("MYSQLHOST")
 port = os.getenv("PORT")
 name = os.getenv("MYSQLDATABASE")
 user = os.getenv("MYSQLUSER")
 password = os.getenv("MYSQLPASSWORD")
 
-DATABASE_URL = f"mysql://root:YWvvCMaQTLnIPFyMhCmXqpGWfhMDpFtP@viaduct.proxy.rlwy.net:11513/railway"
+DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
 
+#Configuración de conexión
 pymysql.install_as_MySQLdb()
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
@@ -30,4 +32,4 @@ def get_db():
     finally:
         db.close()
 
-con = engine.connect()
+#con = engine.connect()
