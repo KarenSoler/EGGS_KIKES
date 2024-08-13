@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const baseUrl = 'http://127.0.0.1:8000/eggs';
+    const baseUrl = 'https://eggskikes-production.up.railway.app';
 
     // Handle form submission for creating an egg
     document.getElementById('create-egg-form').addEventListener('submit', async (e) => {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const supplier = document.getElementById('supplier').value;
 
     try {
-        const response = await fetch('http://127.0.0.1:8000/eggs', {  // Asegúrate de usar la URL correcta
+        const response = await fetch('https://eggskikes-production.up.railway.app', {  // Asegúrate de usar la URL correcta
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
