@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine, MetaData
-from sqlalchemy.orm import sessionmaker, Session
 import os
 import pymysql
 from dotenv import load_dotenv
+from sqlalchemy import create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
 
 load_dotenv()
 host = os.getenv("MYSQLHOST")
