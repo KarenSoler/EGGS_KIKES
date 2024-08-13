@@ -10,7 +10,7 @@ name = os.getenv("MYSQLDATABASE")
 user = os.getenv("MYSQLUSER")
 password = os.getenv("MYSQLPASSWORD")
 
-DATABASE_URL = f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
+DATABASE_URL = "mysql://root:YWvvCMaQTLnIPFyMhCmXqpGWfhMDpFtP@viaduct.proxy.rlwy.net:11513/railway"
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
