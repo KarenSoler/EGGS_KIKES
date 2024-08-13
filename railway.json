@@ -5,7 +5,7 @@
     "buildCommand": "echo building!"
     },
   "deploy": {
-    "startCommand": "echo starting!",
+    "startCommand": "hypercorn main:app --bind \"[::]:$PORT\"",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "never"
