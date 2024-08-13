@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker, Session
 import os
+import pymysql
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -14,6 +15,7 @@ DATABASE_URL = "mysql://root:YWvvCMaQTLnIPFyMhCmXqpGWfhMDpFtP@viaduct.proxy.rlwy
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
+pymysql.install_as_MySQLdb()
 metadata = MetaData()
 metadata.bind = engine
 
