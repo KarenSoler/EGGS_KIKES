@@ -13,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todas las cabeceras
 )
 
-if __name__ == "__main__":
+if __name__ == "__app__":
     uvicorn.run(app, host="viaduct.proxy.rlwy.net", port=11513)
 app.include_router(eggs_router)
 
